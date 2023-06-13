@@ -13,19 +13,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 import one.digitalinnovation.gof.model.Cliente;
 import one.digitalinnovation.gof.service.ClienteService;
+import one.digitalinnovation.gof.service.impl.CommandService;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  * Esse {@link RestController} representa nossa <b>Facade</b>, pois abstrai toda
  * a complexidade de integrações (Banco de Dados H2 e API do ViaCEP) em uma
  * interface simples e coesa (API REST).
  * 
- * @author falvojr
+ * -Modificação: como temos mais de uma implementação de ClienteService, 
+ * agora necessitamos informar via annotation @Qualifier qual classe será
+ * criada, ou remover a interface da classe ClienteServiceImpl.
+ * @author falvojr & mauri
  */
 @RestController
 @RequestMapping("clientes")
 public class ClienteRestController {
 
 	@Autowired
+        @Qualifier("CommandService")
 	private ClienteService clienteService;
 
 	@GetMapping
@@ -40,6 +46,7 @@ public class ClienteRestController {
 
 	@PostMapping
 	public ResponseEntity<Cliente> inserir(@RequestBody Cliente cliente) {
+            
 		clienteService.inserir(cliente);
 		return ResponseEntity.ok(cliente);
 	}
